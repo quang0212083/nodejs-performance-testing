@@ -1,9 +1,8 @@
 module.exports = {
-  users: [
-    'A3334123353',
-  ],
-  password: '12345678',
-  device_name: 'node_street_21',
-  device_idfv: 'node_street_ADDDDDD21',
-  device_platform: 'ios'
+    username: "quang0212083@gmail.com",
+    password: "quang0168214",
+    grant_type: "password",
+    client_id: "40826416009628295844970703114480",
+    client_secret: "DcJB4ok4inz0oninX6RE6M6Np8nhXnu4",
+    Authorization: "Bearer"
 };
