@@ -1,13 +1,8 @@
-const io            = require('socket.io-client');
-const express       = require('express');
-const http          = require('http');
+const app = require('express')();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 const bodyParser    = require('body-parser');
 require('dotenv').config();
-
-
-//Call framework
-const app = express();
-const server = http.createServer(app);
 
 //Parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -19,12 +14,22 @@ app.use(bodyParser.json());
 app.set('view engine', 'ejs');
 
 //Set port
-server.listen(process.env.POST, process.env.DOMAIN);
+http.listen(process.env.POST, process.env.DOMAIN);
 
 //Show server is running on console
-server.on('listening', function() {
-    console.log('Express server started on port %s at %s', server.address().port, server.address().address);
+http.on('listening', function() {
+    console.log('Express server started on port %s at %s', http.address().port, http.address().address);
 });
+
+
+io.on('connection', function(socket){
+    console.log('Client connected...');
+    socket.on('test-api', function(data){
+        TestApi.Performance.Run(data);
+        io.emit('test-api', data);
+    });
+});
+
 
 //Show form update data
 app.get('/', function (request, response) {
@@ -33,12 +38,88 @@ app.get('/', function (request, response) {
 
 const request = require('request');
 const user = require('./account');
-
 const CHAT_URL = 'https://prototype-chat.robin-aisystem.com';
 const API_URL = 'http://35.200.33.192:8089/api';
 
 const INTERVAL_SECOND = 1000;
-const REQUEST_PER_SECOND = 50;
+const REQUEST_PER_SECOND = 10;
+
+let TestApi;
+
+(function (TestApi) {
+    TestApi.Performance = {
+        Run: function (data) {
+            (async () => {
+                const url = data.url;
+                const method = data.method;
+                const param = data.params;
+                const requestPerSecond = data.request;
+                const second = data.second;
+
+                let promises = [];
+                promises.push(new Promise((resolve) => {
+                    request.post(`${API_URL}/auth/login`, {
+                        json: true,
+                        form: user
+                    }, (err, res, body) => {
+                        if (err) {
+                            return;
+                        }
+                        resolve(body.access_token);
+                    });
+                }));
+
+                promises = await Promise.all(promises);
+                user.token = promises[0];
+
+
+                let time = 1;
+                setInterval(async () => {
+                    promises = [];
+                    //Status now
+
+                    let fail = 0;
+                    let pass = 0;
+                    for (let i = 0; i < requestPerSecond; i += 1) {
+                        promises.push(new Promise((resolve) => {
+                            request.get(`${API_URL}/api/status_now`, {
+                                json: true,
+                                auth: {
+                                    'bearer': user.token
+                                }
+                            }, (err, res, body) => {
+                                if (err) {
+                                    fail += 1;
+                                    console.log(err);
+                                    console.dir(err);
+                                    return;
+                                }
+                                pass += 1;
+                                if (i === requestPerSecond-1){
+                                    io.emit('test-api', {
+                                        request:time,
+                                        failed: fail,
+                                        successful: pass
+                                    });
+                                }
+                                resolve(body.data);
+                            });
+                        }))
+                    }
+
+                    await Promise.all(promises);
+                    time += 1;
+                },
+                    INTERVAL_SECOND);
+                })().then(() => {
+                console.log('Test finished');
+            }).catch((err) => {
+                console.log(err);
+            });
+        }
+    }
+})((TestApi = {}) || TestApi);
+
 
 app.get('/test-api', function(req, res) {
     (async () => {
@@ -67,7 +148,6 @@ app.get('/test-api', function(req, res) {
         let time = 1;
         setInterval(async () => {
             promises = [];
-
             //Status now
             for (let i = 0; i < REQUEST_PER_SECOND; i += 1) {
                 promises.push(new Promise((resolve) => {
@@ -83,6 +163,7 @@ app.get('/test-api', function(req, res) {
                             return;
                         }
                         console.log(`Api ${'status_now'} Lan thu ${time} - request thu ${i}`);
+                        // io.emit('test-api', {a:1});
                         resolve(body.data);
                     });
                 }))

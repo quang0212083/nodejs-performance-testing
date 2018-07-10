@@ -8,14 +8,14 @@
 
 <div class="zta_test">
     <div class="zta_boxes">
-        <textarea id="zta1" placeholder="Url"></textarea>
-        <textarea id="zta2" class="json" placeholder="Params (json)"></textarea>
+        <textarea id="zta1" placeholder="Url" name="url"></textarea>
+        <textarea id="zta2" class="json" name="params" placeholder="Params (json)"></textarea>
     </div>
     <br>
 
     <div class="zta_boxes">
-        <textarea id="zta1" placeholder="Number of requests in 1 second"></textarea>
-        <textarea id="zta2" placeholder="Time (seconds)"></textarea>
+        <textarea id="zta1" name="request" placeholder="Number of requests in 1 second"></textarea>
+        <textarea id="zta2" name="seconds" placeholder="Time (seconds)"></textarea>
     </div>
 
     <select id="preExec" name="method" placeholder="Method">
@@ -23,9 +23,14 @@
         <option value="get">Get</option>
         <option value="post">Post</option>
     </select>
+    <div class="zta_boxes" style="text-align: center;">
+        <button class="run">Run</button>
+        <button class="cancel">Stop</button>
+    </div>
 
-    <button onclick="zta_jsCompare()">Run</button>
-    <div id="zta_output"></div>
+    <div id="zta_output">
+    </div>
+
 </div>
 
 <footer>
@@ -42,6 +47,7 @@
      */
     $(document).ready(function () {
         PerformanceTesting.Constructor.SetJsonExample();
+        PerformanceTesting.Report.Show()
     });
 
     /**
@@ -49,6 +55,8 @@
      */
     let PerformanceTesting;
     (function (PerformanceTesting) {
+
+        //Set example json
         PerformanceTesting.Constructor = {
             SetJsonExample: function () {
                 // arbitrary js object:
@@ -65,6 +73,42 @@
                 const str = JSON.stringify(myJsObj, undefined, 4);
                 // display pretty printed object in text area:
                 $('.json').html(str);
+            }
+        };
+
+
+        /**
+         * Send data socket IO
+         * object data
+         * @type {{Show: Show}}
+         */
+        PerformanceTesting.Report = {
+            Show: function () {
+                const socket = io();
+                $('.run').on('click', function () {
+                    $('#zta_output').html('');
+                    const $params = JSON.parse($('textarea[name="params"]').val());
+                    const data = {
+                        url: $('textarea[name="url"]').val(),
+                        params: $params,
+                        request: $('textarea[name="request"]').val(),
+                        second: $('textarea[name="seconds"]').val(),
+                        method: $('select[name="method"]').val(),
+                    };
+
+                    socket.emit('test-api', data);
+
+                    socket.on('test-api', function(response){
+                        if (typeof response.successful !== 'undefined') {
+                            const label = `<label>Second: ${response.request}  <span class="label label-success">Success:${response.successful}</span> <span class="label label-warning">Fail:${response.failed}</span></label><br>`;
+                            $('#zta_output').append(label);
+                        }
+                    });
+                });
+
+                $('.cancel').click(function(){
+                    socket.disconnect();
+                });
             }
         };
 
