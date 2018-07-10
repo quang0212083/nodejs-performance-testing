@@ -1,8 +1,61 @@
 <meta charset="UTF-8">
 <title>Api performance testing</title>
 
+<style>
+    .zta_test {
+        box-sizing: border-box;
+        width: 95%;
+    }
+    .zta_test * {
+        box-sizing: border-box;
+    }
+    .zta_boxes {
+        overflow: hidden;
+        width: 103%;
+    }
+    .zta_test textarea {
+        height: 200px;
+        font-family: "Courier New", monospace;
+        padding: 12px;
+        line-height: 1.5em;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+    .zta_test select {
+        height: 30px;
+        font-family: "Courier New", monospace;
+        padding: 12px;
+        line-height: 1.5em;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+    .zta_test #preExec {
+        width: 100%;
+        margin: 1.5%;
+    }
+    .zta_test #zta1 {
+        width: 47%;
+        margin: 0 1.5%;
+        float: left;
+    }
+    .zta_test #zta2 {
+        width: 47%;
+        margin: 0 1.5%;
+        float: right;
+    }
+    .zta_test button {
+        display: block;
+        margin: 30px auto;
+        font-size: 16px;
+        background: #fff;
+        border-radius: 4px;
+        padding: 12px 30px;
+    }
+    .container{
+        margin-top: 3%;
+    }
+</style>
 <!-- CSS (load bootstrap from a CDN) -->
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-<style>
-    body    { padding-top:50px; }
-</style>
+<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

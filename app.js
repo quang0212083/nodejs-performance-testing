@@ -87,72 +87,6 @@ app.get('/test-api', function(req, res) {
                     });
                 }))
             }
-            console.log('         ');
-
-            //Friend recommend
-            for (let i = 0; i < REQUEST_PER_SECOND; i += 1) {
-                promises.push(new Promise((resolve) => {
-                    request.get(`${API_URL}/friends/recommendation`, {
-                        json: true,
-                        auth: {
-                            'bearer': user.token
-                        }
-                    }, (err, res, body) => {
-                        if (err) {
-                            console.log(err);
-                            console.dir(err);
-                            return;
-                        }
-                        console.log(`Api ${'friend_recommend'} Lan thu ${time} - request thu ${i}`);
-                        resolve(body.data);
-                    });
-                }))
-            }
-            console.log('         ');
-
-            //Check message is exist
-            for (let i = 0; i < REQUEST_PER_SECOND; i += 1) {
-                promises.push(new Promise((resolve) => {
-                    request.get(`${API_URL}/messages/check_existed/11`, {
-                        json: true,
-                        auth: {
-                            'bearer': user.token
-                        }
-                    }, (err, res, body) => {
-                        if (err) {
-                            console.log(err);
-                            console.dir(err);
-                            return;
-                        }
-                        console.log(`Api ${'Check message is exits'} Lan thu ${time} - request thu ${i}`);
-                        resolve(body.data);
-                    });
-                }))
-            }
-            console.log('         ');
-
-            //Check chat reply
-            for (let i = 0; i < REQUEST_PER_SECOND; i += 1) {
-                promises.push(new Promise((resolve => {
-                    request.post(`${API_URL}/chat/reply`, {
-                        json: true,
-                        data: {
-                            message_id: 'ok'
-                        },
-                        auth: {
-                            'bearer': user.token
-                        }
-                    }, (err, res, body) => {
-                        if (err) {
-                            console.log(err);
-                            console.log(err);
-                            return;
-                        }
-                        console.log(`Api ${'Chat reply is exits'} Lan thu ${time} - request thu ${i}`);
-                        resolve(body.data)
-                    });
-                })))
-            }
 
             await Promise.all(promises);
             time += 1;
@@ -167,6 +101,67 @@ app.get('/test-api', function(req, res) {
 
 
 
+// //Check chat reply
+// for (let i = 0; i < REQUEST_PER_SECOND; i += 1) {
+//     promises.push(new Promise((resolve => {
+//         request.post(`${API_URL}/chat/reply`, {
+//             json: true,
+//             data: {
+//                 message_id: 'ok'
+//             },
+//             auth: {
+//                 'bearer': user.token
+//             }
+//         }, (err, res, body) => {
+//             if (err) {
+//                 console.log(err);
+//                 console.log(err);
+//                 return;
+//             }
+//             console.log(`Api ${'Chat reply is exits'} Lan thu ${time} - request thu ${i}`);
+//             resolve(body.data)
+//         });
+//     })))
+// }
+
+//Check message is exist
+// for (let i = 0; i < REQUEST_PER_SECOND; i += 1) {
+//     promises.push(new Promise((resolve) => {
+//         request.get(`${API_URL}/messages/check_existed/11`, {
+//             json: true,
+//             auth: {
+//                 'bearer': user.token
+//             }
+//         }, (err, res, body) => {
+//             if (err) {
+//                 console.log(err);
+//                 console.dir(err);
+//                 return;
+//             }
+//             console.log(`Api ${'Check message is exits'} Lan thu ${time} - request thu ${i}`);
+//             resolve(body.data);
+//         });
+//     }))
+// }
+//Friend recommend
+// for (let i = 0; i < REQUEST_PER_SECOND; i += 1) {
+//     promises.push(new Promise((resolve) => {
+//         request.get(`${API_URL}/friends/recommendation`, {
+//             json: true,
+//             auth: {
+//                 'bearer': user.token
+//             }
+//         }, (err, res, body) => {
+//             if (err) {
+//                 console.log(err);
+//                 console.dir(err);
+//                 return;
+//             }
+//             console.log(`Api ${'friend_recommend'} Lan thu ${time} - request thu ${i}`);
+//             resolve(body.data);
+//         });
+//     }))
+// }
 
 
 
