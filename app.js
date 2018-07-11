@@ -29,6 +29,7 @@ io.on('connection', function(socket){
     });
 });
 
+
 //Show form update data
 app.get('/', function (request, response) {
     response.render('index');
@@ -86,21 +87,19 @@ let TestApi;
                                     'bearer': user.token
                                 }
                             }, (err, res, body) => {
-                                if (err) {
+                                if (err)
                                     fail += 1;
-                                    // console.log(err);
-                                    // console.dir(err);
-                                    // return;
-                                }
-                                pass += 1;
-                                if (i === requestPerSecond-1){
+                                else
+                                    pass += 1;
+
+                                if (fail+pass === requestPerSecond-1){
                                     io.emit('test-api', {
                                         request:time,
                                         failed: fail,
-                                        successful: pass
+                                        successful: pass+1
                                     });
                                 }
-                                resolve(body.data);
+                                resolve(body);
                             });
                         }))
                     }
