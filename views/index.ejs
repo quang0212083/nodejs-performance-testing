@@ -23,7 +23,8 @@
         </select>
         <div class="zta_boxes" style="text-align: center;">
             <button class="run" style="background: #7299bb;">Run</button>
-            <button class="cancel" style="background: #e69d9d;">Stop</button>
+            <button class="cancel" style="background: #e69d9d;">Stop</button><br>
+            <img class="loading" style="width: 5%;margin-top: -3%; display: none;" src="https://loading.io/spinners/coolors/lg.palette-rotating-ring-loader.gif">
         </div>
 
         <div id="zta_output">
@@ -82,6 +83,7 @@
             Show: function () {
                 const socket = io();
                 $('.run').on('click', function () {
+                    $('.loading').show();
                     socket.connect('test-api');
 
                     $('#zta_output').html('');
@@ -105,6 +107,7 @@
                 });
 
                 $('.cancel').click(function(){
+                    $('.loading').hide();
                     socket.disconnect();
                 });
             }
