@@ -21,6 +21,10 @@ http.on('listening', function() {
     console.log('Express server started on port %s at %s', http.address().port, http.address().address);
 });
 
+/**
+ * Socket IO
+ * @constructor
+ */
 io.on('connection', function(socket){
     console.log('Client connected...');
     socket.on('test-api', function(data){
