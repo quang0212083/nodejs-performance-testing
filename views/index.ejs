@@ -5,38 +5,34 @@
     <% include partials/head %>
 </head>
 <body class="container">
+    <div class="zta_test">
+        <div class="zta_boxes">
+            <textarea id="zta1" placeholder="Url" name="url"></textarea>
+            <textarea id="zta2" class="json" name="params" placeholder="Params (json)"></textarea>
+        </div>
+        <br>
 
-<div class="zta_test">
-    <div class="zta_boxes">
-        <textarea id="zta1" placeholder="Url" name="url"></textarea>
-        <textarea id="zta2" class="json" name="params" placeholder="Params (json)"></textarea>
+        <div class="zta_boxes">
+            <textarea id="zta1" name="request" placeholder="Number of requests in 1 second"></textarea>
+            <textarea id="zta2" name="seconds" placeholder="Time (seconds)"></textarea>
+        </div>
+
+        <select id="preExec" name="method" placeholder="Method">
+            <option value="get">Get</option>
+            <option value="post">Post</option>
+        </select>
+        <div class="zta_boxes" style="text-align: center;">
+            <button class="run" style="background: #7299bb;">Run</button>
+            <button class="cancel" style="background: #e69d9d;">Stop</button>
+        </div>
+
+        <div id="zta_output">
+        </div>
     </div>
-    <br>
 
-    <div class="zta_boxes">
-        <textarea id="zta1" name="request" placeholder="Number of requests in 1 second"></textarea>
-        <textarea id="zta2" name="seconds" placeholder="Time (seconds)"></textarea>
-    </div>
-
-    <select id="preExec" name="method" placeholder="Method">
-        <option value="">Method</option>
-        <option value="get">Get</option>
-        <option value="post">Post</option>
-    </select>
-    <div class="zta_boxes" style="text-align: center;">
-        <button class="run">Run</button>
-        <button class="cancel">Stop</button>
-    </div>
-
-    <div id="zta_output">
-    </div>
-
-</div>
-
-<footer>
-    <% include partials/footer %>
-</footer>
-
+    <footer>
+        <% include partials/footer %>
+    </footer>
 </body>
 
 <script>
@@ -86,6 +82,8 @@
             Show: function () {
                 const socket = io();
                 $('.run').on('click', function () {
+                    socket.connect('test-api');
+
                     $('#zta_output').html('');
                     const $params = JSON.parse($('textarea[name="params"]').val());
                     const data = {

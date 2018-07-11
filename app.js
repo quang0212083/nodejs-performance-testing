@@ -21,7 +21,6 @@ http.on('listening', function() {
     console.log('Express server started on port %s at %s', http.address().port, http.address().address);
 });
 
-
 io.on('connection', function(socket){
     console.log('Client connected...');
     socket.on('test-api', function(data){
@@ -29,7 +28,6 @@ io.on('connection', function(socket){
         io.emit('test-api', data);
     });
 });
-
 
 //Show form update data
 app.get('/', function (request, response) {
@@ -90,9 +88,9 @@ let TestApi;
                             }, (err, res, body) => {
                                 if (err) {
                                     fail += 1;
-                                    console.log(err);
-                                    console.dir(err);
-                                    return;
+                                    // console.log(err);
+                                    // console.dir(err);
+                                    // return;
                                 }
                                 pass += 1;
                                 if (i === requestPerSecond-1){
